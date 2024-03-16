@@ -8,7 +8,9 @@ fn main() {
 }
 
 fn read_file(path: &str) -> String {
-    let contents = fs::read_to_string(path)
-        .expect("There was a problem reading the file");
-    contents
+    let contents = fs::read_to_string(path);
+    match contents {
+        Ok(lines) => lines,
+        Err(_) => String::new(),
+    }
 }
