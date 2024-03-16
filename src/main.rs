@@ -5,6 +5,7 @@ fn main() {
     let contents = read_file(path);
     let lines = split_into_lines(contents);
     let blocks = construct_blocks(lines);
+    println!("{}", blocks[0]);
 }
 
 fn construct_blocks(lines: Vec<String>) -> Vec<String> {
@@ -21,6 +22,9 @@ fn construct_blocks(lines: Vec<String>) -> Vec<String> {
         }
     }
     blocks
+        .into_iter()
+        .filter(|block| block.len() > 10)
+        .collect::<Vec<String>>()
 }
 
 fn split_into_lines(file: String) -> Vec<String> {
