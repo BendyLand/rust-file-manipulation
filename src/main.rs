@@ -16,34 +16,38 @@ fn format_block(block: &String) -> String {
     let mut tokens = block
         .split_whitespace()
         .collect::<Vec<&str>>();
-    let language = {
-        if tokens[0].contains(':') {
-            let result = tokens[0].to_string();
-            tokens = tokens[1..].to_vec();
-            result
+    let language = extract_language(&mut tokens);
+    let formatted_details = format_details(&tokens);
+    format!("{}{}", language, formatted_details)
+}
+
+fn extract_language(tokens: &mut Vec<&str>) -> String {
+    let mut result = String::new();
+    if tokens[0].contains(':') {
+        result = tokens[0].to_string();
+        *tokens = tokens[1..].to_vec();
+    }
+    else {
+        result = format!("{} {}", tokens[0], tokens[1]);
+        *tokens = tokens[2..].to_vec();
+    }
+    result
+}
+
+fn format_details(tokens: &[&str]) -> String {
+    let mut pairs = Vec::<String>::new();
+    let mut pair = String::new();
+    for token in tokens {
+        if token.contains(':') {
+            pairs.push(pair);
+            pair = String::from("");
+            pair += format!("{} ", token).as_str();
         }
         else {
-            let result = format!("{} {}", tokens[0], tokens[1]);
-            tokens = tokens[2..].to_vec();
-            result
+            pair += format!("{} ", token).as_str();
         }
-    };
-    let formatted_details = {
-        let mut pairs = Vec::<String>::new();
-        let mut pair = String::new();
-        for token in tokens {
-            if token.contains(':') {
-                pairs.push(pair);
-                pair = String::from("");
-                pair += format!("{} ", token).as_str();
-            }
-            else {
-                pair += format!("{} ", token).as_str();
-            }
-        }
-        pairs.join("\n")
-    };
-    format!("{}{}", language, formatted_details)
+    }
+    pairs.join("\n")
 }
 
 fn construct_blocks(lines: Vec<String>) -> Vec<String> {
